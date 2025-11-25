@@ -79,9 +79,21 @@
             document.body.appendChild(script);
         }
 
-        function receiveData(data) {
-            console.log(data);
-            //handleResponse(data.status);
+        function receiveData(res) {
+            document.getElementById('loading').style.display = 'none';
+            const resultDiv = document.getElementById('result');
+            if(res.status == "OK"){
+                let str = `<h1>บันทึกข้อมูลสำเร็จ</h1>`;
+                str += `<p>ชื่อ: ${res.data.empname}</p>`;
+                str += `<p>${res.data.empno}</p>`;
+                resultDiv.innerHTML = str;
+            }else if(res.status == "USED"){
+                resultDiv.innerHTML = `<h1>ถูกใช้ไปแล้ว</h1>`;
+            }else if(res.status == "NOT_FOUND"){
+                resultDiv.innerHTML = `<h1>ไม่พบข้อมูล</h1>`;
+            }else{
+                resultDiv.innerHTML = `<h1>เกิดข้อผิดพลาด</h1>`;
+            }
         }
 
         function handleResponse(status) {
