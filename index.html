@@ -58,10 +58,18 @@
     <div id="loading">กำลังตรวจสอบข้อมูล...</div>
     <div id="result"></div>
 
+    <!-- form POST แบบ hidden: ส่งไป Google Script แล้วให้ script redirect กลับ -->
+    <form id="gsForm" method="POST"
+        action="https://script.google.com/macros/s/AKfycbzC98FprEJ9qBAT6mckpA3sWuUpme9zfwHRPC7sir4zvxNZ4gGmba3Nm1_1oIpY8FqYyA/exec"
+        style="display:none;">
+        <input type="hidden" name="uuid" id="uuidInput" value="">
+        <input type="hidden" name="redirectUrl" id="redirectUrl" value="">
+    </form>
+
     <script>
         // --- 1. การตั้งค่า ---
         const LIFF_ID = "2008564783-bwDPmp8j"; // ใส่ LIFF ID ที่ได้จาก LINE Developers
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzC98FprEJ9qBAT6mckpA3sWuUpme9zfwHRPC7sir4zvxNZ4gGmba3Nm1_1oIpY8FqYyA/exec"; // ใส่ URL ที่ได้จากขั้นตอนที่ 1
+        const GOOGLE_SCRIPT_URL = document.getElementById('gsForm').action;
 
         // --- 2. เริ่มต้น LIFF ---
         async function main() {
@@ -71,7 +79,7 @@
             //     return;
             // }
             // startScanner();
-            checkUUID('asd1as32485r1ds65n4aw5')
+            submitUuid('asd1as32485r1ds65n4aw5')
         }
 
         // --- 3. ฟังก์ชันสแกน QR ---
@@ -86,6 +94,14 @@
             const config = { fps: 60, qrbox: { width: 250, height: 250 } };
 
             html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess);
+        }
+
+        function submitUuid(uuid) {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').innerHTML = `UUID: ${escapeHtml(uuid)}`;
+            document.getElementById('uuidInput').value = uuid;
+            // ส่งแบบปกติ (browser จะไป domain script แล้ว script จะ redirect กลับ)
+            document.getElementById('gsForm').submit();
         }
 
         // --- 4. เมื่อสแกนเจอ QR Code ---
@@ -157,11 +173,11 @@
             //     redirect: 'follow',
             //     body: JSON.stringify({ uuid: uuid })
             // });
-             const response = await fetch(GOOGLE_SCRIPT_URL, {
+            const response = await fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
                 body: JSON.stringify({ uuid: uuid })
             });
-            
+
 
             const data = await response.json();
             handleResponse(data.status);
@@ -200,5 +216,3 @@
 
 
 </html>
-
-
