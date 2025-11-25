@@ -96,6 +96,10 @@
             html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess);
         }
 
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, function (m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]; });
+        }
+
         function submitUuid(uuid) {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('result').innerHTML = `UUID: ${escapeHtml(uuid)}`;
