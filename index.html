@@ -53,24 +53,8 @@
         function checkUUID(uuid) {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('result').innerHTML = `UUID: ${uuid}`;
-
-            // เรียกใช้เทคนิค JSONP (สร้าง Script Tag)
             const script = document.createElement('script');
-            // ส่ง uuid และบอกชื่อฟังก์ชัน callback ที่จะให้ Google Script เรียกกลับมา
-            //const callbackName = 'receiveData_' + Date.now();
             const callbackName = 'receiveData';
-
-            // สร้างฟังก์ชัน Global รอรับค่า
-            // window[callbackName] = function(data) {
-            //     console.log('call back');
-            //     handleResponse(data.status);
-            //     // ล้างทิ้งเมื่อเสร็จ
-            //     //delete window[callbackName];
-            //     //document.body.removeChild(script);
-            // };
-
-            // สร้าง URL และแปะ Script ลงในหน้าเว็บ
-            // สังเกตว่าเราใช้ ?callback=... เพื่อบอกชื่อฟังก์ชัน
             script.src = `${GOOGLE_SCRIPT_URL}?uuid=${encodeURIComponent(uuid)}&callback=${callbackName}`;
             script.onerror = () => {
                 document.getElementById('loading').style.display = 'none';
@@ -94,19 +78,7 @@
             }else{
                 resultDiv.innerHTML = `<h1>เกิดข้อผิดพลาด</h1>`;
             }
-        }
-
-        function handleResponse(status) {
-            document.getElementById('loading').style.display = 'none';
-            const resultDiv = document.getElementById('result');
-
-            if (status === "OK") {
-                resultDiv.innerHTML = `<span class="success">✅ สถานะปกติ (OK)</span>`;
-                sendMessageToLine("OK");
-            } else {
-                resultDiv.innerHTML = `<span class="error">❌ กรุณาติดต่อ Admin</span>`;
-                sendMessageToLine("ติดต่อ admin");
-            }
+            return;
         }
 
         function sendMessageToLine(msg) {
