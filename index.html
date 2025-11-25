@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,15 +10,48 @@
     <!-- นำเข้า Library สแกน QR -->
     <script src="./html5-qrcode.min.js" type="text/javascript"></script>
     <style>
-        body { font-family: 'Sarabun', sans-serif; text-align: center; margin: 0; padding: 0; background-color: #222; color: white; }
-        #reader { width: 100%; max-width: 500px; margin: 0 auto; }
-        #result { margin-top: 20px; font-size: 18px; padding: 10px; }
-        .hidden { display: none; }
-        .success { color: #4CAF50; font-weight: bold; }
-        .error { color: #FF5722; font-weight: bold; }
-        #loading { display: none; margin-top: 20px;}
+        body {
+            font-family: 'Sarabun', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #222;
+            color: white;
+        }
+
+        #reader {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            padding: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .error {
+            color: #FF5722;
+            font-weight: bold;
+        }
+
+        #loading {
+            display: none;
+            margin-top: 20px;
+        }
     </style>
 </head>
+
 <body>
     <h3 style="margin-top: 20px;">สแกน QR Code เพื่อตรวจสอบ</h3>
     <div id="reader"></div>
@@ -37,7 +71,7 @@
             //     return;
             // }
             // startScanner();
-            checkUUID('asd1as32485r1ds65n4aw5') 
+            checkUUID('asd1as32485r1ds65n4aw5')
         }
 
         // --- 3. ฟังก์ชันสแกน QR ---
@@ -48,7 +82,7 @@
         function startScanner() {
             scanned = false;
             html5QrCode = new Html5Qrcode("reader");
-            
+
             const config = { fps: 60, qrbox: { width: 250, height: 250 } };
 
             html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess);
@@ -88,16 +122,16 @@
             document.getElementById('result').innerHTML = `UUID: ${uuid}`;
 
             // ส่ง Request ไป Google Script
-            fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors', // สำคัญสำหรับ Google Script Web App แบบ Simple
-                cache: 'no-cache',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                redirect: 'follow',
-                body: JSON.stringify({ uuid: uuid })
-            })
+            // fetch(GOOGLE_SCRIPT_URL, {
+            //     method: 'POST',
+            //     mode: 'no-cors', // สำคัญสำหรับ Google Script Web App แบบ Simple
+            //     cache: 'no-cache',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     redirect: 'follow',
+            //     body: JSON.stringify({ uuid: uuid })
+            // })
             // เนื่องจาก mode: 'no-cors' เราจะไม่เห็น response body โดยตรงใน browser ปกติ
             // แต่เพื่อให้ง่าย เราจะใช้วิธี trick หรือใช้ mode ปกติถ้า setup CORS ดีแล้ว
             // ** เพื่อความชัวร์และง่ายที่สุดใน LIFF เราจะใช้วิธีนี้ครับ: **
@@ -112,9 +146,15 @@
         }
 
         async function callAPI(uuid) {
-             // ใช้เทคนิค Text/Plain เพื่อหลบ Preflight CORS
+            // ใช้เทคนิค Text/Plain เพื่อหลบ Preflight CORS
             const response = await fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
+                mode: 'no-cors', // สำคัญสำหรับ Google Script Web App แบบ Simple
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                redirect: 'follow',
                 body: JSON.stringify({ uuid: uuid })
             });
 
@@ -154,5 +194,3 @@
 </body>
 
 </html>
-
-
