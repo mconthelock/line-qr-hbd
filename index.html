@@ -24,8 +24,8 @@
 
     <script>
         // ใส่ URL ของ Google Script ของคุณที่นี่
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxT67UJS6WipWfiI6VbUpOx9X44S6ngFzRm37SeZQfbQ-gzBsyl6lDKhID0RyI7CR5hDw/exec"; 
-        const LIFF_ID = "YOUR_LIFF_ID"; 
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxT67UJS6WipWfiI6VbUpOx9X44S6ngFzRm37SeZQfbQ-gzBsyl6lDKhID0RyI7CR5hDw/exec";
+        const LIFF_ID = "YOUR_LIFF_ID";
 
         async function main() {
             // await liff.init({ liffId: LIFF_ID });
@@ -53,18 +53,44 @@
         function checkUUID(uuid) {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('result').innerHTML = `UUID: ${uuid}`;
-            
+
             // เรียกใช้เทคนิค JSONP (สร้าง Script Tag)
             const script = document.createElement('script');
             // ส่ง uuid และบอกชื่อฟังก์ชัน callback ที่จะให้ Google Script เรียกกลับมา
             const callbackName = 'receiveData_' + Date.now();
-            
+
+           // Timeout Failsafe: จับเวลา 10 วินาที ถ้า Server ไม่เรียกกลับมา ให้แจ้ง Error
+            // (กรณีนี้มักเกิดจาก GAS ส่ง JSON ธรรมดามา ไม่ใช่ JSONP หรือลืม Deploy ใหม่)
+            const timeoutId = setTimeout(() => {
+                if (window[callbackName]) {
+                    // ล้างค่าทิ้ง
+                    delete window[callbackName];
+                    if (document.body.contains(script)) {
+                        document.body.removeChild(script);
+                    }
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('result').innerHTML = `
+                        <span class="error">❌ หมดเวลาเชื่อมต่อ (Timeout)</span><br>
+                        <small style="font-size:12px; color:#ccc;">
+                            Server ไม่ตอบกลับในรูปแบบ JSONP<br>
+                            ตรวจสอบว่า Deploy Google Script เป็นเวอร์ชันล่าสุดแล้วหรือยัง
+                        </small>`;
+                }
+            }, 10000);
+
             // สร้างฟังก์ชัน Global รอรับค่า
             window[callbackName] = function(data) {
+                // ยกเลิกตัวจับเวลา เพราะได้รับข้อมูลแล้ว
+                clearTimeout(timeoutId);
+
+                console.log("Data received:", data); // Debug ดูค่าที่ได้รับ
                 handleResponse(data.status);
+
                 // ล้างทิ้งเมื่อเสร็จ
                 delete window[callbackName];
-                document.body.removeChild(script);
+                if (document.body.contains(script)) {
+                    document.body.removeChild(script);
+                }
             };
 
             // สร้าง URL และแปะ Script ลงในหน้าเว็บ
