@@ -58,16 +58,16 @@
             const script = document.createElement('script');
             // ส่ง uuid และบอกชื่อฟังก์ชัน callback ที่จะให้ Google Script เรียกกลับมา
             //const callbackName = 'receiveData_' + Date.now();
-            const callbackName = 'receiveData_334444';
+            const callbackName = 'receiveData';
 
             // สร้างฟังก์ชัน Global รอรับค่า
-            window[callbackName] = function(data) {
-                console.log('call back');
-                handleResponse(data.status);
-                // ล้างทิ้งเมื่อเสร็จ
-                //delete window[callbackName];
-                //document.body.removeChild(script);
-            };
+            // window[callbackName] = function(data) {
+            //     console.log('call back');
+            //     handleResponse(data.status);
+            //     // ล้างทิ้งเมื่อเสร็จ
+            //     //delete window[callbackName];
+            //     //document.body.removeChild(script);
+            // };
 
             // สร้าง URL และแปะ Script ลงในหน้าเว็บ
             // สังเกตว่าเราใช้ ?callback=... เพื่อบอกชื่อฟังก์ชัน
@@ -77,6 +77,11 @@
                 document.getElementById('result').innerHTML = `<span class="error">❌ เชื่อมต่อไม่ได้ (ตรวจสอบ URL Script)</span>`;
             };
             document.body.appendChild(script);
+        }
+
+        function receiveData(data) {
+            console.log('call back');
+            handleResponse(data.status);
         }
 
         function handleResponse(status) {
