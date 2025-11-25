@@ -151,9 +151,9 @@
                 method: 'POST',
                // mode: 'no-cors', // สำคัญสำหรับ Google Script Web App แบบ Simple
                 cache: 'no-cache',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                // headers: {
+                //     'Content-Type': 'application/json'
+                // },
                 redirect: 'follow',
                 body: JSON.stringify({ uuid: uuid })
             });
@@ -195,3 +195,4 @@
 
 
 </html>
+
