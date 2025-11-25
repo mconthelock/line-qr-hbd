@@ -61,7 +61,7 @@
     <script>
         // --- 1. การตั้งค่า ---
         const LIFF_ID = "2008564783-bwDPmp8j"; // ใส่ LIFF ID ที่ได้จาก LINE Developers
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyloArTwFU6wCStQUY2bhZWZ5QDQSlXrxs9VZtRsefsM2jPX-Kd_ao1Km4XZQ6xAbJFVQ/exec"; // ใส่ URL ที่ได้จากขั้นตอนที่ 1
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzC98FprEJ9qBAT6mckpA3sWuUpme9zfwHRPC7sir4zvxNZ4gGmba3Nm1_1oIpY8FqYyA/exec"; // ใส่ URL ที่ได้จากขั้นตอนที่ 1
 
         // --- 2. เริ่มต้น LIFF ---
         async function main() {
@@ -149,7 +149,7 @@
             // ใช้เทคนิค Text/Plain เพื่อหลบ Preflight CORS
             const response = await fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors', // สำคัญสำหรับ Google Script Web App แบบ Simple
+               // mode: 'no-cors', // สำคัญสำหรับ Google Script Web App แบบ Simple
                 cache: 'no-cache',
                 headers: {
                     'Content-Type': 'application/json'
@@ -192,5 +192,6 @@
         main();
     </script>
 </body>
+
 
 </html>
