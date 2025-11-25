@@ -7,7 +7,7 @@
     <!-- นำเข้า LIFF SDK -->
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <!-- นำเข้า Library สแกน QR -->
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="./html5-qrcode.min.js" type="text/javascript"></script>
     <style>
         body { font-family: 'Sarabun', sans-serif; text-align: center; margin: 0; padding: 0; background-color: #222; color: white; }
         #reader { width: 100%; max-width: 500px; margin: 0 auto; }
@@ -40,22 +40,46 @@
         }
 
         // --- 3. ฟังก์ชันสแกน QR ---
+        // Html5Qrcode instance and one-shot flag (so we only scan once)
+        let html5QrCode = null;
+        let scanned = false;
+
         function startScanner() {
-            const html5QrCode = new Html5Qrcode("reader");
-            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            scanned = false;
+            html5QrCode = new Html5Qrcode("reader");
+            console.log('html', html5QrCode);
+            
+            const config = { fps: 60, qrbox: { width: 250, height: 250 } };
 
             html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess);
         }
 
         // --- 4. เมื่อสแกนเจอ QR Code ---
         function onScanSuccess(decodedText, decodedResult) {
-            // หยุดกล้องเพื่อไม่ให้สแกนซ้ำ
-            Html5Qrcode.stop().then(() => {
+            // console.log('success', decodedText, decodedResult);
+
+            // If we've already handled a scan, ignore further callbacks
+            if (scanned) return;
+            scanned = true;
+
+            // Stop this instance (not the class) and then clear the UI
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    // console.log('stop');
+                    // clear UI elements inserted by the library
+                    html5QrCode.clear();
+
+                    document.getElementById('reader').style.display = 'none';
+                    // Now you can call checkUUID or other handling once
+                    checkUUID(decodedText);
+                }).catch(err => {
+                    console.error('Error stopping scanner:', err);
+                });
+            } else {
+                // Fallback: hide reader and mark scanned
                 document.getElementById('reader').style.display = 'none';
-                checkUUID(decodedText);
-            }).catch(err => {
-                // handle err
-            });
+                // checkUUID(decodedText);
+            }
         }
 
         // --- 5. ส่งค่าไปเช็คที่ Google Sheet ---
