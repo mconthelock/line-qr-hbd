@@ -19,7 +19,6 @@
     </style>
 </head>
 <body>
-
     <h3 style="margin-top: 20px;">สแกน QR Code เพื่อตรวจสอบ</h3>
     <div id="reader"></div>
     <div id="loading">กำลังตรวจสอบข้อมูล...</div>
@@ -27,7 +26,7 @@
 
     <script>
         // --- 1. การตั้งค่า ---
-        const LIFF_ID = "YOUR_LIFF_ID"; // ใส่ LIFF ID ที่ได้จาก LINE Developers
+        const LIFF_ID = "2008564783-bwDPmp8j"; // ใส่ LIFF ID ที่ได้จาก LINE Developers
         const GOOGLE_SCRIPT_URL = "YOUR_GAS_API_URL"; // ใส่ URL ที่ได้จากขั้นตอนที่ 1
 
         // --- 2. เริ่มต้น LIFF ---
@@ -44,7 +43,7 @@
         function startScanner() {
             const html5QrCode = new Html5Qrcode("reader");
             const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-            
+
             html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess);
         }
 
@@ -78,13 +77,13 @@
             // เนื่องจาก mode: 'no-cors' เราจะไม่เห็น response body โดยตรงใน browser ปกติ
             // แต่เพื่อให้ง่าย เราจะใช้วิธี trick หรือใช้ mode ปกติถ้า setup CORS ดีแล้ว
             // ** เพื่อความชัวร์และง่ายที่สุดใน LIFF เราจะใช้วิธีนี้ครับ: **
-            
+
             // หมายเหตุ: fetch mode 'no-cors' กับ Google script จะ return opaque response อ่านค่าไม่ได้
             // ดังนั้นเราจะเปลี่ยนวิธีส่งข้อมูลเป็นแบบ text/plain เพื่อให้ Google Script อ่านได้ง่ายขึ้น
             // และใช้ redirect ใน script ให้ถูกต้อง
-            
+
             // ** วิธีที่แก้ปัญหา CORS ดีที่สุดคือใช้ Form Submit หรือเปลี่ยน fetch เป็นด้านล่างนี้ **
-            
+
             callAPI(uuid);
         }
 
@@ -94,7 +93,7 @@
                 method: 'POST',
                 body: JSON.stringify({ uuid: uuid })
             });
-            
+
             const data = await response.json();
             handleResponse(data.status);
         }
