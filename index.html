@@ -31,12 +31,13 @@
 
         // --- 2. เริ่มต้น LIFF ---
         async function main() {
-            await liff.init({ liffId: LIFF_ID });
-            if (!liff.isLoggedIn()) {
-                liff.login();
-                return;
-            }
-            startScanner();
+            // await liff.init({ liffId: LIFF_ID });
+            // if (!liff.isLoggedIn()) {
+            //     liff.login();
+            //     return;
+            // }
+            // startScanner();
+            checkUUID('asd1as32485r1ds65n4aw5') 
         }
 
         // --- 3. ฟังก์ชันสแกน QR ---
@@ -47,7 +48,6 @@
         function startScanner() {
             scanned = false;
             html5QrCode = new Html5Qrcode("reader");
-            console.log('html', html5QrCode);
             
             const config = { fps: 60, qrbox: { width: 250, height: 250 } };
 
