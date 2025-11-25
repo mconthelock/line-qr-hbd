@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan QR Code</title>
+    <!-- นำเข้า LIFF SDK -->
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <!-- นำเข้า Library สแกน QR -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <style>
+        body { font-family: 'Sarabun', sans-serif; text-align: center; margin: 0; padding: 0; background-color: #222; color: white; }
+        #reader { width: 100%; max-width: 500px; margin: 0 auto; }
+        #result { margin-top: 20px; font-size: 18px; padding: 10px; }
+        .hidden { display: none; }
+        .success { color: #4CAF50; font-weight: bold; }
+        .error { color: #FF5722; font-weight: bold; }
+        #loading { display: none; margin-top: 20px;}
+    </style>
+</head>
+<body>
+
+    <h3 style="margin-top: 20px;">สแกน QR Code เพื่อตรวจสอบ</h3>
+    <div id="reader"></div>
+    <div id="loading">กำลังตรวจสอบข้อมูล...</div>
+    <div id="result"></div>
+
+    <script>
+        // --- 1. การตั้งค่า ---
+        const LIFF_ID = "YOUR_LIFF_ID"; // ใส่ LIFF ID ที่ได้จาก LINE Developers
+        const GOOGLE_SCRIPT_URL = "YOUR_GAS_API_URL"; // ใส่ URL ที่ได้จากขั้นตอนที่ 1
+
+        // --- 2. เริ่มต้น LIFF ---
+        async function main() {
+            await liff.init({ liffId: LIFF_ID });
+            if (!liff.isLoggedIn()) {
+                liff.login();
+                return;
+            }
+            startScanner();
+        }
+
+        // --- 3. ฟังก์ชันสแกน QR ---
+        function startScanner() {
+            const html5QrCode = new Html5Qrcode("reader");
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess);
+        }
+
+        // --- 4. เมื่อสแกนเจอ QR Code ---
+        function onScanSuccess(decodedText, decodedResult) {
+            // หยุดกล้องเพื่อไม่ให้สแกนซ้ำ
+            Html5Qrcode.stop().then(() => {
+                document.getElementById('reader').style.display = 'none';
+                checkUUID(decodedText);
+            }).catch(err => {
+                // handle err
+            });
+        }
+
+        // --- 5. ส่งค่าไปเช็คที่ Google Sheet ---
+        function checkUUID(uuid) {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').innerHTML = `UUID: ${uuid}`;
+
+            // ส่ง Request ไป Google Script
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors', // สำคัญสำหรับ Google Script Web App แบบ Simple
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                redirect: 'follow',
+                body: JSON.stringify({ uuid: uuid })
+            })
+            // เนื่องจาก mode: 'no-cors' เราจะไม่เห็น response body โดยตรงใน browser ปกติ
+            // แต่เพื่อให้ง่าย เราจะใช้วิธี trick หรือใช้ mode ปกติถ้า setup CORS ดีแล้ว
+            // ** เพื่อความชัวร์และง่ายที่สุดใน LIFF เราจะใช้วิธีนี้ครับ: **
+            
+            // หมายเหตุ: fetch mode 'no-cors' กับ Google script จะ return opaque response อ่านค่าไม่ได้
+            // ดังนั้นเราจะเปลี่ยนวิธีส่งข้อมูลเป็นแบบ text/plain เพื่อให้ Google Script อ่านได้ง่ายขึ้น
+            // และใช้ redirect ใน script ให้ถูกต้อง
+            
+            // ** วิธีที่แก้ปัญหา CORS ดีที่สุดคือใช้ Form Submit หรือเปลี่ยน fetch เป็นด้านล่างนี้ **
+            
+            callAPI(uuid);
+        }
+
+        async function callAPI(uuid) {
+             // ใช้เทคนิค Text/Plain เพื่อหลบ Preflight CORS
+            const response = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ uuid: uuid })
+            });
+            
+            const data = await response.json();
+            handleResponse(data.status);
+        }
+
+        function handleResponse(status) {
+            document.getElementById('loading').style.display = 'none';
+            const resultDiv = document.getElementById('result');
+
+            if (status === "OK") {
+                resultDiv.innerHTML = `<span class="success">✅ สถานะปกติ (OK)</span>`;
+                sendMessageToLine("OK");
+            } else {
+                resultDiv.innerHTML = `<span class="error">❌ กรุณาติดต่อ Admin</span>`;
+                sendMessageToLine("ติดต่อ admin");
+            }
+        }
+
+        // --- 6. ส่งข้อความกลับเข้าห้องแชท ---
+        function sendMessageToLine(msg) {
+            if (liff.isInClient()) {
+                liff.sendMessages([{
+                    type: 'text',
+                    text: msg
+                }]).then(() => {
+                    setTimeout(() => liff.closeWindow(), 2000); // ปิดหน้าต่างหลังส่งเสร็จ 2 วิ
+                }).catch((err) => {
+                    console.error('Error sending message:', err);
+                });
+            }
+        }
+
+        main();
+    </script>
+</body>
+</html>
