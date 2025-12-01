@@ -97,7 +97,7 @@
 
         const loadSwal = Swal.mixin({
             didOpen: () => {
-                this.showLoading()
+                loadSwal.showLoading()
             },
             allowOutsideClick: false,
         });
