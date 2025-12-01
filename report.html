@@ -18,7 +18,7 @@
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxT67UJS6WipWfiI6VbUpOx9X44S6ngFzRm37SeZQfbQ-gzBsyl6lDKhID0RyI7CR5hDw/exec";
         const LIFF_ID = "YOUR_LIFF_ID";
 
-        async function getReport(month) {
+        async function getReport(month, year) {
             fetch(GOOGLE_SCRIPT_URL, {
                 method: "POST",
                 headers: {
@@ -26,7 +26,8 @@
                 },
                 body: JSON.stringify({
                     action: "get",
-                    date: "2025-12-01",
+                    month: month,
+                    year: year
                 }),
             })
                 .then(res => res.json())
@@ -35,8 +36,13 @@
         }
 
         document.getElementById('submit').addEventListener('click', () => {
-            const month = document.getElementById('month').value;
-            console.log("Selected month:", month);
+            const my = document.getElementById('month').value;
+            console.log("Selected month:", my);
+            var [year, month] = my.split("-");
+            month = month.startsWith("0") ? month.replace("0", "") : month;
+            console.log('month', month);
+            console.log('year', year);
+            const data = getReport(month, year);
         });
 
     </script>
