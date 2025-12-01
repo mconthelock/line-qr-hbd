@@ -119,6 +119,10 @@
             console.log('month', month);
             console.log('year', year);
             const data = getReport(month, year);
+            if(!data.status){
+                showError(data.message);
+                return;
+            }
         });
 
         function showError(message) {
