@@ -4,6 +4,7 @@
 <head>
     <title>Report</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="sweetalert2.min.css">
 </head>
 
 <style>
@@ -83,7 +84,7 @@
         </div>
     </div>
 
-
+    <script src="sweetalert2.all.min.js"></script>
     <script>
         // ใส่ URL ของ Google Script ของคุณที่นี่
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxT67UJS6WipWfiI6VbUpOx9X44S6ngFzRm37SeZQfbQ-gzBsyl6lDKhID0RyI7CR5hDw/exec";
@@ -108,6 +109,10 @@
 
         document.getElementById('submit').addEventListener('click', () => {
             const my = document.getElementById('month').value;
+            if(!my){
+                showError("กรุณาเลือกเดือน");
+                return;
+            }
             console.log("Selected month:", my);
             var [year, month] = my.split("-");
             month = month.startsWith("0") ? month.replace("0", "") : month;
@@ -115,6 +120,17 @@
             console.log('year', year);
             const data = getReport(month, year);
         });
+
+        function showError(message) {
+            Swal.fire({
+                position: "bottom-end",
+                title: 'Error!',
+                text: message,
+                icon: 'error',
+                showConfirmButton: false,
+                timer: 3000
+            })
+        }
 
     </script>
 </body>
