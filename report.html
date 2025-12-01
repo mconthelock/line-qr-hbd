@@ -108,19 +108,18 @@
             return res.json();
         }
 
-        document.getElementById('submit').addEventListener('click', () => {
+        document.getElementById('submit').addEventListener('click', async () => {
             try{
                 const my = document.getElementById('month').value;
                 if(!my){
                     showMessage("กรุณาเลือกเดือน", 'warning');
                     return;
                 }
-                console.log("Selected month:", my);
                 var [year, month] = my.split("-");
                 month = month.startsWith("0") ? month.replace("0", "") : month;
-                console.log('month', month);
-                console.log('year', year);
-                const data = getReport(month, year);
+                const data = await getReport(month, year);
+                console.log(data, data.status);
+                
                 if(!data.status){
                     showMessage(data.message, 'warning');
                     return;
