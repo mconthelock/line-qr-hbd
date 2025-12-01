@@ -115,6 +115,7 @@
                     showMessage("กรุณาเลือกเดือน", 'warning');
                     return;
                 }
+                loader(true);
                 var [year, month] = my.split("-");
                 month = month.startsWith("0") ? month.replace("0", "") : month;
                 const data = await getReport(month, year);
@@ -126,6 +127,8 @@
                 }
             } catch (error) {
                 showMessage("เกิดข้อผิดพลาด: " + error.message);
+            } finally {
+                loader(false);
             }
         });
 
@@ -140,6 +143,20 @@
                 timerProgressBar: true,
                 toast: true
             })
+        }
+
+        function loader(show) {
+            if (show) {
+                Swal.fire({
+                    title: 'กำลังโหลด...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            } else {
+                Swal.close();
+            }
         }
         
 
