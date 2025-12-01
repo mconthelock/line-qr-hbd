@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Page Title</title>
+    <title>Report</title>
 </head>
 
 <body>
@@ -34,7 +34,7 @@
                 .catch(err => console.error("error:", err));
         }
 
-        eventListener('click', document.getElementById('submit'), () => {
+        document.getElementById('submit').addEventListener('click', () => {
             const month = document.getElementById('month').value;
             console.log("Selected month:", month);
         });
