@@ -5,12 +5,71 @@
     <title>Report</title>
 </head>
 
+<style>
+    body{
+        font-size: 16px;
+    }
+    .container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        padding: 10px;
+    }
+    .card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 20px;
+        max-width: 400px;
+        width: 100%;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    #title {
+        text-align: center;
+        margin-bottom: 2rem;
+        font-size: 24px;
+    }   
+    .field {
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .field label {
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    .field input {
+        padding: 8px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    button {
+        padding: 10px;
+        font-size: 16px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    @media screen and (max-width: 600px) {
+       
+    }
+
+</style>
+
 <body>
 
-    <h1>Report</h1>
-    <label for="month">Month</label>
-    <input type="month" name="month" id="month">
-    <button type="button" id="submit">Submit</button>
+    <div class="container">
+        <div class="card">
+            <div id="title">Report</div>
+            <div class="field">
+                <input type="month" name="month" id="month">
+                <button type="button" id="submit">Submit</button>
+            </div>
+        </div>
+    </div>
 
 
     <script>
