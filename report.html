@@ -91,7 +91,7 @@
         const LIFF_ID = "YOUR_LIFF_ID";
 
         async function getReport(month, year) {
-            fetch(GOOGLE_SCRIPT_URL, {
+            const res = await fetch(GOOGLE_SCRIPT_URL, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'text/plain;charset=utf-8',
@@ -101,10 +101,11 @@
                     month: month,
                     year: year
                 }),
-            })
-                .then(res => res.json())
-                .then(data => console.log("response:", data))
-                .catch(err => console.error("error:", err));
+            });
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            return res.json();
         }
 
         document.getElementById('submit').addEventListener('click', () => {
