@@ -5,6 +5,7 @@
     <title>Report</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="sweetalert2.min.css">
+    <link rel="stylesheet" href="dataTables.dataTables.min.css">
 </head>
 
 <style>
@@ -82,9 +83,11 @@
                 <button type="button" id="submit">Submit</button>
             </div>
         </div>
+        <table id="table"></table>
     </div>
 
     <script src="sweetalert2.all.min.js"></script>
+    <script src="dataTables.min.js"></script>
     <script>
         // ใส่ URL ของ Google Script ของคุณที่นี่
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxT67UJS6WipWfiI6VbUpOx9X44S6ngFzRm37SeZQfbQ-gzBsyl6lDKhID0RyI7CR5hDw/exec";
@@ -124,6 +127,16 @@
                 if(!data.status){
                     showMessage(data.message, 'warning');
                     return;
+                }else{
+                    const columns = [
+                        {data: 'EMPNO', title: 'รหัสพนักงาน'},
+                        {data: 'NAME', title: 'ชื่อ-สกุล'},
+                        {data: 'USEDATE', title: 'วันที่ใช้'},
+                    ];
+                    new DataTable('#table', {
+                        data: data.data,
+                        columns: columns,
+                    });
                 }
             } catch (error) {
                 showMessage("เกิดข้อผิดพลาด: " + error.message);
