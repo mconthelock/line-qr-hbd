@@ -15,7 +15,8 @@
 
     .container {
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
         width: 100%;
         padding: 10px;
     }
@@ -94,6 +95,13 @@
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxT67UJS6WipWfiI6VbUpOx9X44S6ngFzRm37SeZQfbQ-gzBsyl6lDKhID0RyI7CR5hDw/exec";
         const LIFF_ID = "YOUR_LIFF_ID";
 
+        const loadSwal = Swal.mixin({
+            didOpen: () => {
+                this.showLoading()
+            },
+            allowOutsideClick: false,
+        });
+
         async function getReport(month, year) {
             const res = await fetch(GOOGLE_SCRIPT_URL, {
                 method: "POST",
@@ -113,9 +121,9 @@
         }
 
         document.getElementById('submit').addEventListener('click', async () => {
-            try{
+            try {
                 const my = document.getElementById('month').value;
-                if(!my){
+                if (!my) {
                     showMessage("กรุณาเลือกเดือน", 'warning');
                     return;
                 }
@@ -124,15 +132,15 @@
                 month = month.startsWith("0") ? month.replace("0", "") : month;
                 const data = await getReport(month, year);
                 console.log(data, data.status);
-                
-                if(!data.status){
+
+                if (!data.status) {
                     showMessage(data.message, 'warning');
                     return;
-                }else{
+                } else {
                     const columns = [
-                        {data: 'EMPNO', title: 'รหัสพนักงาน'},
-                        {data: 'NAME', title: 'ชื่อ-สกุล'},
-                        {data: 'USEDATE', title: 'วันที่ใช้'},
+                        { data: 'EMPNO', title: 'รหัสพนักงาน' },
+                        { data: 'NAME', title: 'ชื่อ-สกุล' },
+                        { data: 'USEDATE', title: 'วันที่ใช้' },
                     ];
                     $('#table').DataTable({
                         destroy: true,
@@ -163,18 +171,23 @@
 
         function loader(show) {
             if (show) {
-                Swal.fire({
-                    title: 'กำลังโหลด...',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
+                loadSwal.fire({
+                    customClass: {
+                        popup: 'swal-loader-popup'
+                    },
+                    showConfirmButton: false,
+                    allowOutsideClick: false
                 });
             } else {
-                Swal.close();
+                const loaderEl = document.querySelector('.swal-loader-popup');
+                if (loaderEl) {
+                    loadSwal.close(); // ปิดเฉพาะ instance ของ mixin (ถ้าเจอ)
+                } else {
+                    // ไม่มี loader อยู่ แปลว่า toast หรือ popup อื่นมาก่อน — ไม่ทำไร
+                }
             }
         }
-        
+
 
     </script>
 </body>
