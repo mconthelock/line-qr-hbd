@@ -108,35 +108,40 @@
         }
 
         document.getElementById('submit').addEventListener('click', () => {
-            const my = document.getElementById('month').value;
-            if(!my){
-                showError("กรุณาเลือกเดือน");
-                return;
-            }
-            console.log("Selected month:", my);
-            var [year, month] = my.split("-");
-            month = month.startsWith("0") ? month.replace("0", "") : month;
-            console.log('month', month);
-            console.log('year', year);
-            const data = getReport(month, year);
-            if(!data.status){
-                showError(data.message);
-                return;
+            try{
+                const my = document.getElementById('month').value;
+                if(!my){
+                    showMessage("กรุณาเลือกเดือน", 'warning');
+                    return;
+                }
+                console.log("Selected month:", my);
+                var [year, month] = my.split("-");
+                month = month.startsWith("0") ? month.replace("0", "") : month;
+                console.log('month', month);
+                console.log('year', year);
+                const data = getReport(month, year);
+                if(!data.status){
+                    showMessage(data.message, 'warning');
+                    return;
+                }
+            } catch (error) {
+                showMessage("เกิดข้อผิดพลาด: " + error.message);
             }
         });
 
-        function showError(message) {
+        function showMessage(message, type = "error") {
             Swal.fire({
                 position: "bottom-end",
-                title: 'Error!',
+                title: type == 'error' ? 'Error' : (type == 'success' ? 'Success' : 'Warning!'),
                 text: message,
-                icon: 'error',
+                icon: type,
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true,
                 toast: true
             })
         }
+        
 
     </script>
 </body>
