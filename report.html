@@ -18,8 +18,8 @@
 
         async function main() {
             const data = new URLSearchParams();
-            form.append('action', 'get');
-            form.append('date', '2025-12-01');
+            data.append('action', 'get');
+            data.append('date', '2025-12-01');
             fetch(GOOGLE_SCRIPT_URL, {
             method: "POST",
             body: data
