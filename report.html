@@ -17,19 +17,12 @@
         const LIFF_ID = "YOUR_LIFF_ID";
 
         async function main() {
+            const data = new URLSearchParams();
+            form.append('action', 'get');
+            form.append('date', '2025-12-01');
             fetch(GOOGLE_SCRIPT_URL, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                action: "get",
-                date: "2025-12-01",
-                rows: [
-                { name: "เจ๊บ", amount: 500, note: "ทดสอบ" },
-                { name: "วิทยา", amount: 900, note: "เพิ่มแถว" }
-                ]
-            }),
+            body: data
             })
             .then(res => res.json())
             .then(data => console.log("response:", data))
