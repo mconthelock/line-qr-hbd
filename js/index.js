@@ -13,7 +13,7 @@ $(async function () {
 async function scanQRCode() {
     try {
         const result = await liff.scanCodeV2();
-        document.querySelector("#result").innerHTML = `UUID: ${result.value}`;
+        // document.querySelector("#result").innerHTML = `UUID: ${result.value}`;
     } catch (error) {
         console.log("scanCodeV2", error);
     }
@@ -77,7 +77,7 @@ function onScanSuccess(decodedText) {
 //prettier-ignore
 async function checkUUID(uuid) {
     try {
-        document.getElementById('result').innerHTML = `UUID: ${uuid}`;
+        // document.getElementById('result').innerHTML = `UUID: ${uuid}`;
         const res = await fetch(
             `${GOOGLE_SCRIPT_URL}?uuid=${encodeURIComponent(
                 uuid
@@ -95,32 +95,26 @@ async function checkUUID(uuid) {
     }
 }
 
+//prettier-ignore
 function receiveData(res) {
     const resultDiv = document.getElementById("result");
     if (res.status == "OK") {
-        showMessage(
-            `บันทึกข้อมูลสำเร็จ ชื่อ: ${res.data.empname} (${res.data.empno})`,
-            "success",
-            { timer: false, showCloseButton: true, timerProgressBar: false }
-        );
+        let str = `<h1>บันทึกข้อมูลสำเร็จ</h1>`;
+        str += `<p>ชื่อ: ${res.data.empname}</p>`;
+        str += `<p>${res.data.empno}</p>`;
+        resultDiv.innerHTML = str;
+        // showMessage(`บันทึกข้อมูลสำเร็จ ชื่อ: ${res.data.empname} (${res.data.empno})`,"success",{ timer: false, showCloseButton: true, timerProgressBar: false, toast: false});
     } else if (res.status == "USED") {
-        showMessage(
-            `รหัสนี้ถูกใช้ไปแล้ว ชื่อ: ${res.data.empname} (${res.data.empno})`,
-            "warning",
-            { timer: false, showCloseButton: true, timerProgressBar: false }
-        );
+        resultDiv.innerHTML = `<h1>ถูกใช้ไปแล้ว</h1>
+        <p>ชื่อ: ${res.data.empname}</p>
+        <p>${res.data.empno}</p>`;
+        // showMessage(`รหัสนี้ถูกใช้ไปแล้ว ชื่อ: ${res.data.empname} (${res.data.empno})`,"warning",{ timer: false, showCloseButton: true, timerProgressBar: false, toast: false});
     } else if (res.status == "NOT_FOUND") {
-        showMessage("ไม่พบข้อมูลพนักงาน", "warning", {
-            timer: false,
-            showCloseButton: true,
-            timerProgressBar: false,
-        });
+        resultDiv.innerHTML = `<h1>ไม่พบข้อมูลพนักงาน</h1>`;
+        // showMessage("ไม่พบข้อมูลพนักงาน", "warning",{ timer: false, showCloseButton: true, timerProgressBar: false, toast: false});
     } else {
-        showMessage("เกิดข้อผิดพลาดในการบันทึกข้อมูล", "error", {
-            timer: false,
-            showCloseButton: true,
-            timerProgressBar: false,
-        });
+        resultDiv.innerHTML = `<h1>เกิดข้อผิดพลาดในการบันทึกข้อมูล</h1>`;
+        // showMessage("เกิดข้อผิดพลาดในการบันทึกข้อมูล", "error", { timer: false, showCloseButton: true, timerProgressBar: false, toast: false});
     }
 }
 
