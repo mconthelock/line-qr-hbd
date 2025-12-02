@@ -22,9 +22,11 @@ async function scanQRCode() {
 function startScanner() {
     document.getElementById("reader").style.display = "block";
     scanned = false;
-    html5QrCode = new Html5Qrcode("reader");
-    const config = { fps: 60, qrbox: { width: 250, height: 250 } };
-    html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess);
+    if(!html5QrCode){
+        html5QrCode = new Html5Qrcode("reader");
+        const config = { fps: 60, qrbox: { width: 250, height: 250 } };
+        html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess);
+    }
 }
 
 function onScanSuccess(decodedText) {
