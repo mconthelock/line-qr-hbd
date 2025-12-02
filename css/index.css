@@ -1,0 +1,35 @@
+body {
+    font-family: "Sarabun", sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background-color: #222;
+    color: white;
+}
+
+#reader {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+#result {
+    margin-top: 20px;
+    font-size: 18px;
+    padding: 10px;
+}
+
+.success {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.error {
+    color: #ff5722;
+    font-weight: bold;
+}
+
+#loading {
+    display: none;
+    margin-top: 20px;
+}

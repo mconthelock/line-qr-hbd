@@ -4,81 +4,10 @@
 <head>
     <title>Report</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="sweetalert2.min.css">
-    <link rel="stylesheet" href="dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="css/sweetalert2.min.css">
+    <link rel="stylesheet" href="css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="css/report.css">
 </head>
-
-<style>
-    body {
-        font-size: 16px;
-    }
-
-    .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-    }
-
-    .card {
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        padding: 20px;
-        max-width: 400px;
-        width: 100%;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    #title {
-        text-align: center;
-        margin-bottom: 2rem;
-        font-size: 24px;
-    }
-
-    .field {
-        margin-bottom: 15px;
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-        width: 100%;
-    }
-
-    .field label {
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
-
-    .field input {
-        padding: 8px;
-        font-size: 16px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-
-    button {
-        padding: 10px;
-        font-size: 16px;
-        background-color: #28a745;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    @media screen and (max-width: 480px) {
-        .card {
-            max-width: 90%;
-            margin: 0 auto;
-        }
-
-        .dt-container {
-            width: 100% !important;
-            overflow: auto;
-            max-height: 80vh;
-        }
-    }
-</style>
-
 <body>
 
     <div class="container">
@@ -92,132 +21,11 @@
         <table id="table"></table>
     </div>
 
-    <script src="jquery-3.7.1.js"></script>
-    <script src="sweetalert2.all.min.js"></script>
-    <script src="dataTables.min.js"></script>
-    <script>
-        // ใส่ URL ของ Google Script ของคุณที่นี่
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKsd5Iy8GbKqYDZ3MFfh1rFkJOgutVpIr8we1dARuka7i1cDYBuaSU4Q3pSqIlszhAOA/exec";
-        const LIFF_ID = "YOUR_LIFF_ID";
-
-        const loadSwal = Swal.mixin({
-            didOpen: () => {
-                loadSwal.showLoading()
-            },
-            allowOutsideClick: false,
-        });
-
-        async function getReport(month, year) {
-            const res = await fetch(GOOGLE_SCRIPT_URL, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'text/plain;charset=utf-8',
-                },
-                body: JSON.stringify({
-                    action: "get",
-                    month: month,
-                    year: year
-                }),
-            });
-            if (!res.ok) {
-                throw new Error(`HTTP error! status: ${res.status}`);
-            }
-            return res.json();
-        }
-
-        document.getElementById('submit').addEventListener('click', async () => {
-            try {
-                const my = document.getElementById('month').value;
-                if (!my) {
-                    showMessage("กรุณาเลือกเดือน", 'warning');
-                    return;
-                }
-                loader(true);
-                var [year, month] = my.split("-");
-                month = month.startsWith("0") ? month.replace("0", "") : month;
-                const data = await getReport(month, year);
-                console.log(data, data.status);
-
-                if (!data.status) {
-                    showMessage(data.message, 'warning');
-                    return;
-                } else {
-                    const columns = [
-                        { data: 'EMPNO', title: 'รหัสพนักงาน' },
-                        { data: 'NAME', title: 'ชื่อ-สกุล' },
-                        {
-                            data: 'USEDATE',
-                            title: 'วันที่ใช้',
-                            render: function (data) {
-                                const date = new Date(data);
-                                return date.toLocaleDateString('th-TH', {
-                                    year: 'numeric',
-                                    month: '2-digit',
-                                    day: '2-digit'
-                                });
-                            }
-                        },
-                    ];
-                    $('#table').DataTable({
-                        destroy: true,
-                        data: data.data,
-                        columns: columns,
-                        paging: true,
-                        language: {
-                            info: "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
-                            infoEmpty: "",
-                            search: "",
-                            searchPlaceholder: "ค้นหา",
-                            loadingRecords: "กำลังโหลดข้อมูล...",
-                            emptyTable: "ไม่มีข้อมูลในตาราง",
-                            zeroRecords: "ไม่พบข้อมูลที่ต้องการ",
-                            lengthMenu: "_MENU_",
-                            infoFiltered: "(กรองข้อมูลจากทั้งหมด _MAX_ รายการ)",
-                        },
-                    });
-                }
-            } catch (error) {
-                showMessage("เกิดข้อผิดพลาด: " + error.message);
-            } finally {
-                loader(false);
-            }
-        });
-
-        function showMessage(message, type = "error") {
-            Swal.fire({
-                position: "bottom-end",
-                title: type == 'error' ? 'Error' : (type == 'success' ? 'Success' : 'Warning!'),
-                text: message,
-                icon: type,
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                toast: true
-            })
-        }
-
-        function loader(show) {
-            if (show) {
-                loadSwal.fire({
-                    title: 'กำลังโหลดข้อมูล...',
-                    customClass: {
-                        popup: 'swal-loader-popup'
-                    },
-                    showConfirmButton: false,
-                    allowOutsideClick: false
-                });
-            } else {
-                const loaderEl = document.querySelector('.swal-loader-popup');
-                if (loaderEl) {
-                    loadSwal.close(); // ปิดเฉพาะ instance ของ mixin (ถ้าเจอ)
-                } else {
-                    // ไม่มี loader อยู่ แปลว่า toast หรือ popup อื่นมาก่อน — ไม่ทำไร
-                }
-            }
-        }
-
-
-    </script>
+    <script src="js/jquery-3.7.1.js"></script>
+    <script src="js/sweetalert2.all.min.js"></script>
+    <script src="js/dataTables.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/report.js"></script>
 </body>
 
 </html>
