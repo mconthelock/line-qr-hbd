@@ -8,7 +8,6 @@ $(async function () {
         return;
     }
     startScanner();
-    // check("CEE3162A27E516AEA7FDE212B5DA1460");
 });
 
 async function scanQRCode() {
@@ -21,6 +20,7 @@ async function scanQRCode() {
 }
 
 function startScanner() {
+    document.getElementById("reader").style.display = "block";
     scanned = false;
     html5QrCode = new Html5Qrcode("reader");
     const config = { fps: 60, qrbox: { width: 250, height: 250 } };
@@ -96,13 +96,13 @@ async function checkUUID(uuid) {
 function receiveData(res) {
     const resultDiv = document.getElementById("result");
     if (res.status == "OK") {
-        showMessage(`บันทึกข้อมูลสำเร็จ ชื่อ: ${res.data.empname} (${res.data.empno})`, "success", { timer: 5000 });
+        showMessage(`บันทึกข้อมูลสำเร็จ ชื่อ: ${res.data.empname} (${res.data.empno})`, "success", { timer: false, showCloseButton: true, timerProgressBar: false });
     } else if (res.status == "USED") {
-        showMessage(`รหัสนี้ถูกใช้ไปแล้ว ชื่อ: ${res.data.empname} (${res.data.empno})`, "warning", { timer: 5000 });
+        showMessage(`รหัสนี้ถูกใช้ไปแล้ว ชื่อ: ${res.data.empname} (${res.data.empno})`, "warning", { timer: false, showCloseButton: true, timerProgressBar: false });
     } else if (res.status == "NOT_FOUND") {
-        showMessage("ไม่พบข้อมูลพนักงาน", "warning", { timer: 5000 });
+        showMessage("ไม่พบข้อมูลพนักงาน", "warning", { timer: false, showCloseButton: true, timerProgressBar: false });
     } else {
-        showMessage("เกิดข้อผิดพลาดในการบันทึกข้อมูล", "error", { timer: 5000 });
+        showMessage("เกิดข้อผิดพลาดในการบันทึกข้อมูล", "error", { timer: false, showCloseButton: true, timerProgressBar: false });
     }
 }
 
