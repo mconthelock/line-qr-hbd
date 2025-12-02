@@ -18,7 +18,6 @@
         flex-direction: column;
         align-items: center;
         width: 100%;
-        padding: 10px;
     }
 
     .card {
@@ -71,6 +70,12 @@
             max-width: 90%;
             margin: 0 auto;
         }
+
+        .dt-container {
+            width: 100% !important;
+            overflow: auto;
+            max-height: 80vh;
+        }
     }
 </style>
 
@@ -92,7 +97,7 @@
     <script src="dataTables.min.js"></script>
     <script>
         // ใส่ URL ของ Google Script ของคุณที่นี่
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxT67UJS6WipWfiI6VbUpOx9X44S6ngFzRm37SeZQfbQ-gzBsyl6lDKhID0RyI7CR5hDw/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKsd5Iy8GbKqYDZ3MFfh1rFkJOgutVpIr8we1dARuka7i1cDYBuaSU4Q3pSqIlszhAOA/exec";
         const LIFF_ID = "YOUR_LIFF_ID";
 
         const loadSwal = Swal.mixin({
