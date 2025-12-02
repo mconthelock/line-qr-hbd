@@ -140,7 +140,18 @@
                     const columns = [
                         { data: 'EMPNO', title: 'รหัสพนักงาน' },
                         { data: 'NAME', title: 'ชื่อ-สกุล' },
-                        { data: 'USEDATE', title: 'วันที่ใช้' },
+                        { 
+                            data: 'USEDATE', 
+                            title: 'วันที่ใช้',
+                            render: function(data){
+                                const date = new Date(data);
+                                return date.toLocaleDateString('th-TH', {
+                                    year: 'numeric',
+                                    month: '2-digit',
+                                    day: '2-digit'
+                                });
+                            } 
+                        },
                     ];
                     $('#table').DataTable({
                         destroy: true,
