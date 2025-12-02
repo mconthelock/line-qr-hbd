@@ -1,4 +1,4 @@
-let html5QrCode = null;
+let cameraStart = null;
 let scanned = false;
 
 $(async function () {
@@ -22,11 +22,9 @@ async function scanQRCode() {
 function startScanner() {
     document.getElementById("reader").style.display = "block";
     scanned = false;
-    if(!html5QrCode){
-        html5QrCode = new Html5Qrcode("reader");
-        const config = { fps: 60, qrbox: { width: 250, height: 250 } };
-        html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess);
-    }
+    cameraStart = new Html5Qrcode("reader");
+    const config = { fps: 60, qrbox: { width: 250, height: 250 } };
+    cameraStart.start({ facingMode: "environment" }, config, onScanSuccess);
 }
 
 function onScanSuccess(decodedText) {
@@ -36,12 +34,12 @@ function onScanSuccess(decodedText) {
 
     const [uuid, empno] = decodedText.split("|");
     // Stop this instance (not the class) and then clear the UI
-    if (html5QrCode) {
-        html5QrCode
+    if (cameraStart) {
+        cameraStart
             .stop()
             .then(async () => {
                 // clear UI elements inserted by the library
-                html5QrCode.clear();
+                cameraStart.clear();
                 loader(true);
 
                 document.getElementById("reader").style.display = "none";
@@ -51,10 +49,10 @@ function onScanSuccess(decodedText) {
             })
             .catch((err) => {
                 console.error("Error stopping scanner:", err);
-            }).finally(() => {
+            })
+            .finally(() => {
                 loader(false);
             });
-
     } else {
         // Fallback: hide reader and mark scanned
         document.getElementById("reader").style.display = "none";
@@ -98,13 +96,29 @@ async function checkUUID(uuid) {
 function receiveData(res) {
     const resultDiv = document.getElementById("result");
     if (res.status == "OK") {
-        showMessage(`บันทึกข้อมูลสำเร็จ ชื่อ: ${res.data.empname} (${res.data.empno})`, "success", { timer: false, showCloseButton: true, timerProgressBar: false });
+        showMessage(
+            `บันทึกข้อมูลสำเร็จ ชื่อ: ${res.data.empname} (${res.data.empno})`,
+            "success",
+            { timer: false, showCloseButton: true, timerProgressBar: false }
+        );
     } else if (res.status == "USED") {
-        showMessage(`รหัสนี้ถูกใช้ไปแล้ว ชื่อ: ${res.data.empname} (${res.data.empno})`, "warning", { timer: false, showCloseButton: true, timerProgressBar: false });
+        showMessage(
+            `รหัสนี้ถูกใช้ไปแล้ว ชื่อ: ${res.data.empname} (${res.data.empno})`,
+            "warning",
+            { timer: false, showCloseButton: true, timerProgressBar: false }
+        );
     } else if (res.status == "NOT_FOUND") {
-        showMessage("ไม่พบข้อมูลพนักงาน", "warning", { timer: false, showCloseButton: true, timerProgressBar: false });
+        showMessage("ไม่พบข้อมูลพนักงาน", "warning", {
+            timer: false,
+            showCloseButton: true,
+            timerProgressBar: false,
+        });
     } else {
-        showMessage("เกิดข้อผิดพลาดในการบันทึกข้อมูล", "error", { timer: false, showCloseButton: true, timerProgressBar: false });
+        showMessage("เกิดข้อผิดพลาดในการบันทึกข้อมูล", "error", {
+            timer: false,
+            showCloseButton: true,
+            timerProgressBar: false,
+        });
     }
 }
 
