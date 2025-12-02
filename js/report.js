@@ -115,6 +115,7 @@ document.getElementById("export").addEventListener("click", async () => {
         if (window.liff && typeof window.liff.openWindow === 'function') {
             // external: true เพื่อเปิดใน default browser ของอุปกรณ์ (มักรองรับดาวน์โหลด)
             await window.liff.openWindow({ url: objUrl, external: true });
+            showMessage("กำลังดาวน์โหลดไฟล์...", "warning", { timer: 3000 });
             // ถ้าไม่มี exception แล้วก็ถือว่าเรียบร้อย (บางกรณี openWindow อาจไม่ reject แต่ก็ไม่เปิดอะไร)
             // ดังนั้นอยากมี fallback เพิ่มด้านล่างด้วย timeout check
         } else {
