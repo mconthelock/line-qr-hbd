@@ -21,6 +21,7 @@ async function scanQRCode() {
 
 function startScanner() {
     document.getElementById("reader").style.display = "block";
+    document.getElementById("scan").style.display = "none";
     scanned = false;
     cameraStart = new Html5Qrcode("reader");
     const config = { fps: 60, qrbox: { width: 250, height: 250 } };
@@ -43,6 +44,7 @@ function onScanSuccess(decodedText) {
                 loader(true);
 
                 document.getElementById("reader").style.display = "none";
+                document.getElementById("scan").style.display = "block";
                 // Now you can call checkUUID or other handling once
                 const check = await checkUUID(uuid);
                 receiveData(check);
