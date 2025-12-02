@@ -5,6 +5,7 @@ body {
     padding: 0;
     background-color: #222;
     color: white;
+    font-family: "Prompt", sans-serif;
 }
 
 #reader {

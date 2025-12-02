@@ -1,4 +1,5 @@
 
+var data = null;
 
 async function getReport(month, year) {
     const res = await fetch(GOOGLE_SCRIPT_URL, {
@@ -28,15 +29,16 @@ document.getElementById("submit").addEventListener("click", async () => {
         loader(true);
         var [year, month] = my.split("-");
         month = month.startsWith("0") ? month.replace("0", "") : month;
-        const data = await getReport(month, year);
-        console.log(data, data.status);
-
-        if (!data.status) {
-            showMessage(data.message, "warning");
+        const res = await getReport(month, year);
+        if (!res.status) {
+            showMessage(res.message, "warning");
             return;
         } else {
+            data = res.data;
+            document.getElementById("card-table").classList.remove("hidden");
+            document.getElementById("card-search").classList.add("hidden");
             const columns = [
-                { data: "EMPNO", title: "รหัสพนักงาน" },
+                { data: "EMPNO", title: "รหัสพนักงาน", className: "text-center" },
                 { data: "NAME", title: "ชื่อ-สกุล" },
                 {
                     data: "USEDATE",
@@ -53,7 +55,7 @@ document.getElementById("submit").addEventListener("click", async () => {
             ];
             $("#table").DataTable({
                 destroy: true,
-                data: data.data,
+                data: res.data,
                 columns: columns,
                 paging: true,
                 language: {
@@ -74,4 +76,27 @@ document.getElementById("submit").addEventListener("click", async () => {
     } finally {
         loader(false);
     }
+});
+
+document.getElementById("back").addEventListener("click", () => {
+    document.getElementById("card-table").classList.add("hidden");
+    document.getElementById("card-search").classList.remove("hidden");
+});
+
+document.getElementById("export").addEventListener("click", async () => {
+    const fileName = `รายงานการใช้สิทธิ์วันเกิดพนักงาน_${document.getElementById("month").value}.xlsx`;
+    const wk = await defaultExcel({
+        data: data,
+        column: [
+            { header: "รหัสพนักงาน", key: "EMPNO", width: 15 },
+            { header: "ชื่อ-สกุล", key: "NAME", width: 30 },
+            { header: "วันที่ใช้", key: "USEDATE", width: 15, type: "date", numFmt: "dd/mm/yyyy" },
+        ]
+    });
+    exportExcel(wk, fileName);
+    // const my = document.getElementById("month").value;
+    // var [year, month] = my.split("-");
+    // month = month.startsWith("0") ? month.replace("0", "") : month;
+    // const url = `${GOOGLE_SCRIPT_URL}?action=export&month=${month}&year=${year}`;
+    // window.open(url, "_blank");
 });

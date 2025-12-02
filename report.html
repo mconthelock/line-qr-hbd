@@ -3,28 +3,54 @@
 
 <head>
     <title>Report</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/sweetalert2.min.css">
-    <link rel="stylesheet" href="css/dataTables.dataTables.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="cdn/css/sweetalert2.min.css">
+    <link rel="stylesheet" href="cdn/css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/dataTable.css">
     <link rel="stylesheet" href="css/report.css">
 </head>
+
 <body>
 
     <div class="container">
-        <div class="card">
+        <div class="card" id="card-search">
             <div id="title">Report</div>
             <div class="field">
                 <input type="month" name="month" id="month">
                 <button type="button" id="submit">Submit</button>
             </div>
         </div>
-        <table id="table"></table>
+        <div class="card hidden" id="card-table">
+            <div class="flex justify-between mb-5">
+                <div class="text-2xl">รายการคนใช้สิทธิ์</div>
+                <div>
+                    <button id="export" class="btn-success">Export</button>
+                    <button id="back">Back</button>
+                </div>
+            </div>
+            <table id="table" class="table-zebra table-sm"></table>
+        </div>
     </div>
 
-    <script src="js/jquery-3.7.1.js"></script>
-    <script src="js/sweetalert2.all.min.js"></script>
-    <script src="js/dataTables.min.js"></script>
+    <script src="cdn/js/jquery-3.7.1.js"></script>
+    
+    <script src="cdn/js/dayjs.min.js"></script>
+    <script src="cdn/js/utc.min.js"></script>
+    <script src="cdn/js/customParseFormat.min.js"></script>
+    
+    <script src="cdn/js/exceljs.min.js"></script>
+    
+    <script src="cdn/js/sweetalert2.all.min.js"></script>
+    <script src="cdn/js/dataTables.min.js"></script>
+    
     <script src="js/app.js"></script>
+    <script src="js/day.js"></script>
+    <script src="js/excel.js"></script>
     <script src="js/report.js"></script>
 </body>
 

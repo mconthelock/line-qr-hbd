@@ -1,0 +1,104 @@
+:root {
+    --color-base-100: oklch(98% 0.003 247.858);
+    --color-base-200: oklch(96% 0.007 247.896);
+    --color-base-300: oklch(92% 0.013 255.508);
+    --color-base-content: oklch(0% 0.042 265.755);
+    --color-primary: oklch(0.43 0.181 260.48);
+    --color-primary-content: oklch(0.93 0.04 263.36);
+    --color-secondary: oklch(0.7876 0.165783 75.5064);
+    --color-secondary-content: oklch(25% 0.092 26.042);
+    --color-accent: oklch(84% 0.143 164.978);
+    --color-accent-content: oklch(26% 0.051 172.552);
+    --color-neutral: oklch(37% 0.044 257.287);
+    --color-neutral-content: oklch(98% 0.003 247.858);
+    --color-info: oklch(54% 0.245 262.881);
+    --color-info-content: oklch(97% 0.014 254.604);
+    --color-success: oklch(59% 0.145 163.225);
+    --color-success-content: oklch(97% 0.021 166.113);
+    --color-warning: oklch(64% 0.222 41.116);
+    --color-warning-content: oklch(98% 0.016 73.684);
+    --color-error: oklch(57% 0.245 27.325);
+    --color-error-content: oklch(97% 0.013 17.38);
+    --radius-selector: 0.5rem;
+    --radius-field: 0.25rem;
+    --radius-box: 1rem;
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+    --border: 1px;
+    --depth: 1;
+    --noise: 1;
+    --input-color: transparent;
+
+    --btn-bg-color: var(--color-primary);
+    --btn-text-color: var(--color-primary-content);
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.flex {
+    display: flex;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.gap-2 {
+    gap: 0.5rem;
+}
+
+.mb-5 {
+    margin-bottom: 1.25rem;
+}
+
+.text-xl {
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+.text-2xl {
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+button {
+    padding: 8px 12px;
+    font-size: 16px;
+    font-weight: 600;
+    background-color: var(--btn-bg-color);
+    color: var(--btn-text-color);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    --btn-bg-color: oklch(38.307% 0.15209 260.004);
+}
+
+button.btn-success {
+    --btn-bg-color: var(--color-success);
+    --btn-text-color: var(--color-success-content);
+} 
+
+button.btn-success:hover {
+    --btn-bg-color: oklch(50.283% 0.11148 161.303);
+}   
