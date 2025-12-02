@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scan QR Code</title>
-    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <!-- <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script> -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <style>
         body { font-family: 'Sarabun', sans-serif; text-align: center; margin: 0; padding: 0; background-color: #222; color: white; }
@@ -28,11 +28,11 @@
         const LIFF_ID = "2008595384-42wB37LX";
 
         async function main() {
-            await liff.init({ liffId: LIFF_ID });
-            if (!liff.isLoggedIn()) {
-                liff.login();
-                return;
-            }
+            // await liff.init({ liffId: LIFF_ID });
+            // if (!liff.isLoggedIn()) {
+            //     liff.login();
+            //     return;
+            // }
             startScanner();
             // checkUUID('22222');
         }
