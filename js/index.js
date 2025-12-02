@@ -44,7 +44,7 @@ function onScanSuccess(decodedText) {
                 loader(true);
 
                 document.getElementById("reader").style.display = "none";
-                document.getElementById("scan").style.display = "block";
+                document.getElementById("scan").style.display = "inline-block";
                 // Now you can call checkUUID or other handling once
                 const check = await checkUUID(uuid);
                 receiveData(check);
