@@ -49,6 +49,9 @@ document.getElementById("submit").addEventListener("click", async () => {
                             year: "numeric",
                             month: "2-digit",
                             day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
                         });
                     },
                 },
@@ -90,7 +93,7 @@ document.getElementById("export").addEventListener("click", async () => {
         column: [
             { header: "รหัสพนักงาน", key: "EMPNO", width: 15 },
             { header: "ชื่อ-สกุล", key: "NAME", width: 30 },
-            { header: "วันที่ใช้", key: "USEDATE", width: 15, type: "date", numFmt: "dd/mm/yyyy" },
+            { header: "วันที่ใช้", key: "USEDATE", width: 15, type: "date", numFmt: "dd/mm/yyyy hh:mm:ss" },
         ]
     });
     exportExcel(wk, fileName);
