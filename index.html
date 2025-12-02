@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scan QR Code</title>
     <!-- <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script> -->
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <!-- <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script> -->
+     <script src="html5-qrcode.min.js" type="text/javascript"></script>
     <style>
         body { font-family: 'Sarabun', sans-serif; text-align: center; margin: 0; padding: 0; background-color: #222; color: white; }
         #reader { width: 100%; max-width: 500px; margin: 0 auto; }
@@ -28,26 +29,45 @@
         const LIFF_ID = "2008595384-42wB37LX";
 
         async function main() {
-            // await liff.init({ liffId: LIFF_ID });
-            // if (!liff.isLoggedIn()) {
-            //     liff.login();
-            //     return;
-            // }
+            await liff.init({ liffId: LIFF_ID });
+            if (!liff.isLoggedIn()) {
+                liff.login();
+                return;
+            }
             startScanner();
             // checkUUID('22222');
         }
 
+        let html5QrCode = null;
+        let scanned = false;
         function startScanner() {
-            const html5QrCode = new Html5Qrcode("reader");
-            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            scanned = false;
+            html5QrCode = new Html5Qrcode("reader");
+            const config = { fps: 60, qrbox: { width: 250, height: 250 } };
             html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess);
         }
 
         function onScanSuccess(decodedText) {
-            Html5Qrcode.stop().then(() => {
+            // If we've already handled a scan, ignore further callbacks
+            if (scanned) return;
+            scanned = true;
+
+            // Stop this instance (not the class) and then clear the UI
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    // clear UI elements inserted by the library
+                    html5QrCode.clear();
+
+                    document.getElementById('reader').style.display = 'none';
+                    // Now you can call checkUUID or other handling once
+                    checkUUID(decodedText);
+                }).catch(err => {
+                    console.error('Error stopping scanner:', err);
+                });
+            } else {
+                // Fallback: hide reader and mark scanned
                 document.getElementById('reader').style.display = 'none';
-                checkUUID(decodedText);
-            });
+            }
         }
 
         function checkUUID(uuid) {
