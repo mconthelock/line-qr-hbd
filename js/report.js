@@ -112,10 +112,14 @@ document.getElementById("export").addEventListener("click", async () => {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
         const objUrl = URL.createObjectURL(blob);
-        liff.openWindow({
-            url: objUrl,
-            external: true
-        });
+        if (window.liff && typeof window.liff.openWindow === 'function') {
+            // external: true เพื่อเปิดใน default browser ของอุปกรณ์ (มักรองรับดาวน์โหลด)
+            await window.liff.openWindow({ url: objUrl, external: true });
+            // ถ้าไม่มี exception แล้วก็ถือว่าเรียบร้อย (บางกรณี openWindow อาจไม่ reject แต่ก็ไม่เปิดอะไร)
+            // ดังนั้นอยากมี fallback เพิ่มด้านล่างด้วย timeout check
+        } else {
+            throw new Error('liff.openWindow ไม่พร้อมใช้งาน');
+        }
     } catch (err) {
         showMessage("เกิดข้อผิดพลาดในการสร้างไฟล์: " + err.message);
     }

@@ -5,9 +5,11 @@ const LIFF_ID = "2008595384-42wB37LX";
 $(async function () {
     await liff.init({ liffId: LIFF_ID });
     if (!liff.isLoggedIn()) {
-        liff.login();
-        const profile = await liff.getProfile();
-        userId = profile.userId;
+        liff.login().then(async () => {
+            const profile = await liff.getProfile();
+            showMessage(`ยินดีต้อนรับ ${profile.displayName} ${profile.userId} `, "success");
+            userId = profile.userId;
+        });
         return;
     }
     startScanner();
