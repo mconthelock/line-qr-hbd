@@ -8,7 +8,7 @@ const loadSwal = Swal.mixin({
 });
 
 
-function showMessage(message, type = "error") {
+function showMessage(message, type = "error", option = {}) {
     Swal.fire({
         position: "bottom-end",
         title:
@@ -23,6 +23,7 @@ function showMessage(message, type = "error") {
         timer: 3000,
         timerProgressBar: true,
         toast: true,
+        ...option
     });
 }
 

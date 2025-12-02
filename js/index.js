@@ -1,7 +1,7 @@
 let html5QrCode = null;
 let scanned = false;
 
-$(async function(){
+$(async function () {
     await liff.init({ liffId: LIFF_ID });
     if (!liff.isLoggedIn()) {
         liff.login();
@@ -40,14 +40,19 @@ function onScanSuccess(decodedText) {
             .then(async () => {
                 // clear UI elements inserted by the library
                 html5QrCode.clear();
+                loader(true);
 
                 document.getElementById("reader").style.display = "none";
                 // Now you can call checkUUID or other handling once
-                await checkUUID(uuid);
+                const check = await checkUUID(uuid);
+                receiveData(check);
             })
             .catch((err) => {
                 console.error("Error stopping scanner:", err);
+            }).finally(() => {
+                loader(false);
             });
+
     } else {
         // Fallback: hide reader and mark scanned
         document.getElementById("reader").style.display = "none";
@@ -67,8 +72,10 @@ function onScanSuccess(decodedText) {
 //     document.body.appendChild(script);
 // }
 
+//prettier-ignore
 async function checkUUID(uuid) {
     try {
+        document.getElementById('result').innerHTML = `UUID: ${uuid}`;
         const res = await fetch(
             `${GOOGLE_SCRIPT_URL}?uuid=${encodeURIComponent(
                 uuid
@@ -82,29 +89,21 @@ async function checkUUID(uuid) {
         }
         return res.json();
     } catch (error) {
-        document.getElementById("loading").style.display = "none";
-        document.getElementById(
-            "result"
-        ).innerHTML = `<span class="error">❌ เชื่อมต่อไม่ได้ (ตรวจสอบ URL Script)</span>`;
+        showMessage("❌ เชื่อมต่อไม่ได้ (ตรวจสอบ URL Script)", "error", { timer: 5000 });
     }
 }
 
 function receiveData(res) {
-    document.getElementById("loading").style.display = "none";
     const resultDiv = document.getElementById("result");
     if (res.status == "OK") {
-        let str = `<h1>บันทึกข้อมูลสำเร็จ</h1>`;
-        str += `<p>ชื่อ: ${res.data.empname}</p>`;
-        str += `<p>${res.data.empno}</p>`;
-        resultDiv.innerHTML = str;
+        showMessage(`บันทึกข้อมูลสำเร็จ ชื่อ: ${res.data.empname} (${res.data.empno})`, "success", { timer: 5000 });
     } else if (res.status == "USED") {
-        resultDiv.innerHTML = `<h1>ถูกใช้ไปแล้ว</h1>`;
+        showMessage(`รหัสนี้ถูกใช้ไปแล้ว ชื่อ: ${res.data.empname} (${res.data.empno})`, "warning", { timer: 5000 });
     } else if (res.status == "NOT_FOUND") {
-        resultDiv.innerHTML = `<h1>ไม่พบข้อมูล</h1>`;
+        showMessage("ไม่พบข้อมูลพนักงาน", "warning", { timer: 5000 });
     } else {
-        resultDiv.innerHTML = `<h1>เกิดข้อผิดพลาด</h1>`;
+        showMessage("เกิดข้อผิดพลาดในการบันทึกข้อมูล", "error", { timer: 5000 });
     }
-    return;
 }
 
 function sendMessageToLine(msg) {
