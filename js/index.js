@@ -2,13 +2,13 @@ let html5QrCode = null;
 let scanned = false;
 
 $(async function(){
-    // await liff.init({ liffId: LIFF_ID });
-    // if (!liff.isLoggedIn()) {
-    //     liff.login();
-    //     return;
-    // }
-    // startScanner();
-    check("CEE3162A27E516AEA7FDE212B5DA1460");
+    await liff.init({ liffId: LIFF_ID });
+    if (!liff.isLoggedIn()) {
+        liff.login();
+        return;
+    }
+    startScanner();
+    // check("CEE3162A27E516AEA7FDE212B5DA1460");
 });
 
 async function scanQRCode() {
@@ -32,7 +32,7 @@ function onScanSuccess(decodedText) {
     if (scanned) return;
     scanned = true;
 
-    decodedText = "CEE3162A27E516AEA7FDE212B5DA1460";
+    const [uuid, empno] = decodedText.split("|");
     // Stop this instance (not the class) and then clear the UI
     if (html5QrCode) {
         html5QrCode
@@ -43,7 +43,7 @@ function onScanSuccess(decodedText) {
 
                 document.getElementById("reader").style.display = "none";
                 // Now you can call checkUUID or other handling once
-                await checkUUID(decodedText);
+                await checkUUID(uuid);
             })
             .catch((err) => {
                 console.error("Error stopping scanner:", err);
