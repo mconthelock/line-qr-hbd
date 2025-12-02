@@ -2,11 +2,11 @@ let cameraStart = null;
 let scanned = false;
 
 $(async function () {
-    await liff.init({ liffId: LIFF_ID });
-    if (!liff.isLoggedIn()) {
-        liff.login();
-        return;
-    }
+    // await liff.init({ liffId: LIFF_ID });
+    // if (!liff.isLoggedIn()) {
+    //     liff.login();
+    //     return;
+    // }
     startScanner();
 });
 
