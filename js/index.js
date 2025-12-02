@@ -1,12 +1,15 @@
-let cameraStart = null;
-let scanned = false;
-
+var cameraStart = null;
+var scanned = false;
+var userId = null;
+const LIFF_ID = "2008595384-42wB37LX";
 $(async function () {
-    // await liff.init({ liffId: LIFF_ID });
-    // if (!liff.isLoggedIn()) {
-    //     liff.login();
-    //     return;
-    // }
+    await liff.init({ liffId: LIFF_ID });
+    if (!liff.isLoggedIn()) {
+        liff.login();
+        const profile = await liff.getProfile();
+        userId = profile.userId;
+        return;
+    }
     startScanner();
 });
 
@@ -79,9 +82,7 @@ async function checkUUID(uuid) {
     try {
         // document.getElementById('result').innerHTML = `UUID: ${uuid}`;
         const res = await fetch(
-            `${GOOGLE_SCRIPT_URL}?uuid=${encodeURIComponent(
-                uuid
-            )}&callback=receiveData`,
+            `${GOOGLE_SCRIPT_URL}?uuid=${encodeURIComponent(uuid)}&callback=receiveData&userId=${encodeURIComponent(userId)}`,
             {
                 method: "GET",
             }

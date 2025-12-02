@@ -1,5 +1,5 @@
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKsd5Iy8GbKqYDZ3MFfh1rFkJOgutVpIr8we1dARuka7i1cDYBuaSU4Q3pSqIlszhAOA/exec";
-const LIFF_ID = "2008595384-42wB37LX";
+
 const loadSwal = Swal.mixin({
     didOpen: () => {
         loadSwal.showLoading();

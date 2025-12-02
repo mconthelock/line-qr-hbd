@@ -1,6 +1,9 @@
-
 var data = null;
+const LIFF_ID = "2008595384-Y0LyARvx";
 
+$(async function () {
+    await liff.init({ liffId: LIFF_ID });
+});
 async function getReport(month, year) {
     const res = await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
@@ -38,7 +41,11 @@ document.getElementById("submit").addEventListener("click", async () => {
             document.getElementById("card-table").classList.remove("hidden");
             document.getElementById("card-search").classList.add("hidden");
             const columns = [
-                { data: "EMPNO", title: "รหัสพนักงาน", className: "text-center" },
+                {
+                    data: "EMPNO",
+                    title: "รหัสพนักงาน",
+                    className: "text-center",
+                },
                 { data: "NAME", title: "ชื่อ-สกุล" },
                 {
                     data: "USEDATE",
@@ -86,6 +93,7 @@ document.getElementById("back").addEventListener("click", () => {
     document.getElementById("card-search").classList.remove("hidden");
 });
 
+//prettier-ignore
 document.getElementById("export").addEventListener("click", async () => {
     const fileName = `รายงานการใช้สิทธิ์วันเกิดพนักงาน_${document.getElementById("month").value}.xlsx`;
     const wk = await defaultExcel({
@@ -96,10 +104,19 @@ document.getElementById("export").addEventListener("click", async () => {
             { header: "วันที่ใช้", key: "USEDATE", width: 15, type: "date", numFmt: "dd/mm/yyyy hh:mm:ss" },
         ]
     });
-    exportExcel(wk, fileName);
-    // const my = document.getElementById("month").value;
-    // var [year, month] = my.split("-");
-    // month = month.startsWith("0") ? month.replace("0", "") : month;
-    // const url = `${GOOGLE_SCRIPT_URL}?action=export&month=${month}&year=${year}`;
-    // window.open(url, "_blank");
+    // exportExcel(wk, fileName);
+    try {
+        // สร้าง buffer และ blob
+        const buffer = await wk.xlsx.writeBuffer();
+        const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const objUrl = URL.createObjectURL(blob);
+        liff.openWindow({
+            url: objUrl,
+            external: true
+        });
+    } catch (err) {
+        showMessage("เกิดข้อผิดพลาดในการสร้างไฟล์: " + err.message);
+    }
 });

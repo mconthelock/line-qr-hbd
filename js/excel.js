@@ -1,80 +1,33 @@
-async function exportExcel(workbook, fileName = "Report") {
+function exportExcel(workbook, fileName = "Report") {
     if (fileName.endsWith(".xlsx")) {
         fileName = fileName.slice(0, -5);
     }
-    try {
-        const buffer = await workbook.xlsx.writeBuffer();
+    // สร้างไฟล์ Excel เป็น Blob
+    workbook.xlsx.writeBuffer().then(function (buffer) {
         const blob = new Blob([buffer], {
             type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
-        const objUrl = URL.createObjectURL(blob);
 
-        // // 1) พยายามวิธีปกติ
-        // const link = document.createElement("a");
-        // link.href = objUrl;
-        // link.download = `${fileName}.xlsx`;
-        // // แน่ใจว่าเป็น user gesture (เรียกจาก click handler)
-        // link.style.display = "none";
-        // document.body.appendChild(link);
-        // link.click();
-
-        // // small delay ให้ browser มีเวลาเปิดดาวน์โหลด ถ้าโดนบล็อกจะไม่มีผล
-        // setTimeout(() => {
-        //     document.body.removeChild(link);
-        // }, 1000);
-
-        // 2) ตรวจสอบ/fallback: ถ้าไม่ได้ดาวน์โหลด(ถูกบล็อก) ให้ลอง open ในแท็บใหม่
-        //    (บาง webview จะให้ผู้ใช้กด long-press เพื่อบันทึก)
-        setTimeout(() => {
-            // heuristic: ถ้ายังอยู่ใน same page และยังมี object URL ให้ลอง open
-            try {
-                const w = window.open(objUrl, "_blank");
-                // ถ้า blocked (null) — fallback ต่อ
-                if (!w) {
-                    // สุดท้ายลองเปลี่ยน location (navigation)
-                    window.location.href = objUrl;
-                }
-            } catch (err) {
-                // ถ้ายังไม่ได้ ให้เปลี่ยน location
-                try {
-                    window.location.href = objUrl;
-                } catch (e) {
-                    console.error(e);
-                }
-            }
-        }, 600);
-
-        // ปล่อย resource หลังหน่อย
-        setTimeout(() => URL.revokeObjectURL(objUrl), 30_000);
-    } catch (err) {
-        console.error("exportExcel failed:", err);
-        alert("เกิดข้อผิดพลาดในการสร้างไฟล์: " + err.message);
-    }
-    // // สร้างไฟล์ Excel เป็น Blob
-    // workbook.xlsx.writeBuffer().then(function (buffer) {
-    //     const blob = new Blob([buffer], {
-    //         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    //     });
-
-    //     // สร้างลิงก์ดาวน์โหลด
-    //     const link = document.createElement("a");
-    //     link.href = URL.createObjectURL(blob);
-    //     link.download = `${fileName}.xlsx`;
-    //     link.click();
-    // });
+        // สร้างลิงก์ดาวน์โหลด
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `${fileName}.xlsx`;
+        link.click();
+    });
 }
 
 async function defaultExcel({
-    data = [],
-    column = [],
-    sheetName = "Sheet1",
-    font = { bold: true }, // ทำให้ตัวหนา
-    alignment = { vertical: "middle", horizontal: "center" }, // จัดข้อความให้อยู่ตรงกลาง
-    extraWidth = 8,
-    manual = false,
-    manualActions = (sheet) => {},
-    autoWidth = true,
-} = {}) {
+        data = [],
+        column = [], 
+        sheetName = "Sheet1",
+        font = { bold: true }, // ทำให้ตัวหนา
+        alignment = { vertical: "middle", horizontal: "center" }, // จัดข้อความให้อยู่ตรงกลาง
+        extraWidth = 8,
+        manual = false,
+        manualActions = (sheet) => {},
+        autoWidth = true,
+    } = {}) {
+
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet(sheetName); // เพื่มชีท และตั้งชื่อชีท
 
