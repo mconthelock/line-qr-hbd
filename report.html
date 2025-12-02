@@ -140,17 +140,17 @@
                     const columns = [
                         { data: 'EMPNO', title: 'รหัสพนักงาน' },
                         { data: 'NAME', title: 'ชื่อ-สกุล' },
-                        { 
-                            data: 'USEDATE', 
+                        {
+                            data: 'USEDATE',
                             title: 'วันที่ใช้',
-                            render: function(data){
+                            render: function (data) {
                                 const date = new Date(data);
                                 return date.toLocaleDateString('th-TH', {
                                     year: 'numeric',
                                     month: '2-digit',
                                     day: '2-digit'
                                 });
-                            } 
+                            }
                         },
                     ];
                     $('#table').DataTable({
@@ -158,6 +158,17 @@
                         data: data.data,
                         columns: columns,
                         paging: true,
+                        language: {
+                            info: "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                            infoEmpty: "",
+                            search: "",
+                            searchPlaceholder: "ค้นหา",
+                            loadingRecords: "กำลังโหลดข้อมูล...",
+                            emptyTable: "ไม่มีข้อมูลในตาราง",
+                            zeroRecords: "ไม่พบข้อมูลที่ต้องการ",
+                            lengthMenu: "_MENU_",
+                            infoFiltered: "(กรองข้อมูลจากทั้งหมด _MAX_ รายการ)",
+                        },
                     });
                 }
             } catch (error) {
