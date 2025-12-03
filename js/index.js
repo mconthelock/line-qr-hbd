@@ -85,7 +85,7 @@ async function checkUUID(uuid) {
         displayName = profile.displayName;
         // document.getElementById('result').innerHTML = `UUID: ${uuid}`;
         const res = await fetch(
-            `${GOOGLE_SCRIPT_URL}?uuid=${encodeURIComponent(uuid)}&callback=receiveData&userId=${encodeURIComponent(userId)}&displayName=${encodeURIComponent(displayName)}`,
+            `${GOOGLE_SCRIPT_URL}?uuid=${encodeURIComponent(uuid)}&callback=receiveData&userId=${encodeURIComponent(userId)}&displayname=${encodeURIComponent(displayName)}`,
             {
                 method: "GET",
             }
