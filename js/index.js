@@ -24,6 +24,7 @@ async function scanQRCode() {
 function startScanner() {
     document.getElementById("reader").style.display = "block";
     document.getElementById("scan").style.display = "none";
+    document.getElementById("result").style.display = "none";
     scanned = false;
     cameraStart = new Html5Qrcode("reader");
     const config = { fps: 60, qrbox: { width: 250, height: 250 } };
@@ -102,6 +103,7 @@ async function checkUUID(uuid) {
 //prettier-ignore
 function receiveData(res) {
     const resultDiv = document.getElementById("result");
+    document.getElementById("reader").style.display = "inline-block";
     if (res.status == "OK") {
         let str = `<h1>บันทึกข้อมูลสำเร็จ</h1>`;
         str += `<p>ชื่อ: ${res.data.empname}</p>`;
