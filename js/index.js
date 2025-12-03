@@ -7,10 +7,6 @@ $(async function () {
         liff.login()
         return;
     }
-    const profile = await liff.getProfile();
-    showMessage(`ยินดีต้อนรับ ${profile.displayName} ${profile.userId} `, "success");
-    console.log(profile);
-    
     startScanner();
 });
 
@@ -82,7 +78,7 @@ function onScanSuccess(decodedText) {
 async function checkUUID(uuid) {
     try {
         const profile = await liff.getProfile();
-        showMessage(`ยินดีต้อนรับ ${profile.displayName} ${profile.userId} `, "success");
+        // showMessage(`ยินดีต้อนรับ ${profile.displayName} ${profile.userId} `, "success");
         const userId = profile.userId;
         // document.getElementById('result').innerHTML = `UUID: ${uuid}`;
         const res = await fetch(
