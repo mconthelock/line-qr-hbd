@@ -7,6 +7,10 @@ $(async function () {
         liff.login()
         return;
     }
+    const profile = await liff.getProfile();
+    showMessage(`ยินดีต้อนรับ ${profile.displayName} ${profile.userId} `, "success");
+    console.log(profile);
+    
     startScanner();
 });
 
