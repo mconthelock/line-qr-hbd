@@ -80,9 +80,10 @@ async function checkUUID(uuid) {
         const profile = await liff.getProfile();
         // showMessage(`ยินดีต้อนรับ ${profile.displayName} ${profile.userId} `, "success");
         const userId = profile.userId;
+        const displayName = profile.displayName;
         // document.getElementById('result').innerHTML = `UUID: ${uuid}`;
         const res = await fetch(
-            `${GOOGLE_SCRIPT_URL}?uuid=${encodeURIComponent(uuid)}&callback=receiveData&userId=${encodeURIComponent(userId)}`,
+            `${GOOGLE_SCRIPT_URL}?uuid=${encodeURIComponent(uuid)}&callback=receiveData&userId=${encodeURIComponent(userId)}&displayName=${encodeURIComponent(displayName)}`,
             {
                 method: "GET",
             }
