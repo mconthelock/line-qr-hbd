@@ -1,5 +1,7 @@
 var cameraStart = null;
 var scanned = false;
+var userId = "";
+var displayName = "";
 const LIFF_ID = "2008595384-42wB37LX";
 $(async function () {
     await liff.init({ liffId: LIFF_ID });
@@ -79,8 +81,8 @@ async function checkUUID(uuid) {
     try {
         const profile = await liff.getProfile();
         // showMessage(`ยินดีต้อนรับ ${profile.displayName} ${profile.userId} `, "success");
-        const userId = profile.userId;
-        const displayName = profile.displayName;
+        userId = profile.userId;
+        displayName = profile.displayName;
         // document.getElementById('result').innerHTML = `UUID: ${uuid}`;
         const res = await fetch(
             `${GOOGLE_SCRIPT_URL}?uuid=${encodeURIComponent(uuid)}&callback=receiveData&userId=${encodeURIComponent(userId)}&displayName=${encodeURIComponent(displayName)}`,
@@ -105,11 +107,13 @@ function receiveData(res) {
         str += `<p>ชื่อ: ${res.data.empname}</p>`;
         str += `<p>${res.data.empno}</p>`;
         resultDiv.innerHTML = str;
+        sendMessageToLine(`บันทึกข้อมูลสำเร็จ ชื่อ: ${res.data.empname} (${res.data.empno}) ${userId} | ${displayName}`);
         // showMessage(`บันทึกข้อมูลสำเร็จ ชื่อ: ${res.data.empname} (${res.data.empno})`,"success",{ timer: false, showCloseButton: true, timerProgressBar: false, toast: false});
     } else if (res.status == "USED") {
         resultDiv.innerHTML = `<h1>ถูกใช้ไปแล้ว</h1>
         <p>ชื่อ: ${res.data.empname}</p>
         <p>${res.data.empno}</p>`;
+        sendMessageToLine(`ถูกใช้ไปแล้ว ชื่อ: ${res.data.empname} (${res.data.empno}) ${userId} | ${displayName}`);
         // showMessage(`รหัสนี้ถูกใช้ไปแล้ว ชื่อ: ${res.data.empname} (${res.data.empno})`,"warning",{ timer: false, showCloseButton: true, timerProgressBar: false, toast: false});
     } else if (res.status == "NOT_FOUND") {
         resultDiv.innerHTML = `<h1>ไม่พบข้อมูลพนักงาน</h1>`;
