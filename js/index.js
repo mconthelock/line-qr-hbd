@@ -103,7 +103,7 @@ async function checkUUID(uuid) {
 //prettier-ignore
 function receiveData(res) {
     const resultDiv = document.getElementById("result");
-    document.getElementById("result").style.display = "inline-block";
+    document.getElementById("result").style.display = "block";
     if (res.status == "OK") {
         let str = `<h1>บันทึกข้อมูลสำเร็จ</h1>`;
         str += `<p>ชื่อ: ${res.data.empname}</p>`;
