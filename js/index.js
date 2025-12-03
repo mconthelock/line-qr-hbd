@@ -1,15 +1,10 @@
 var cameraStart = null;
 var scanned = false;
-var userId = null;
 const LIFF_ID = "2008595384-42wB37LX";
 $(async function () {
     await liff.init({ liffId: LIFF_ID });
     if (!liff.isLoggedIn()) {
-        liff.login().then(async () => {
-            const profile = await liff.getProfile();
-            showMessage(`ยินดีต้อนรับ ${profile.displayName} ${profile.userId} `, "success");
-            userId = profile.userId;
-        });
+        liff.login()
         return;
     }
     startScanner();
@@ -82,6 +77,9 @@ function onScanSuccess(decodedText) {
 //prettier-ignore
 async function checkUUID(uuid) {
     try {
+        const profile = await liff.getProfile();
+        showMessage(`ยินดีต้อนรับ ${profile.displayName} ${profile.userId} `, "success");
+        const userId = profile.userId;
         // document.getElementById('result').innerHTML = `UUID: ${uuid}`;
         const res = await fetch(
             `${GOOGLE_SCRIPT_URL}?uuid=${encodeURIComponent(uuid)}&callback=receiveData&userId=${encodeURIComponent(userId)}`,
