@@ -122,7 +122,7 @@ function receiveData(res) {
         resultDiv.innerHTML = `<h1>ไม่พบข้อมูลพนักงาน</h1>`;
         // showMessage("ไม่พบข้อมูลพนักงาน", "warning",{ timer: false, showCloseButton: true, timerProgressBar: false, toast: false});
     } else if (res.status == "EXPIRED") {
-        resultDiv.innerHTML = `<h1>❌ รหัสนี้หมดอายุการใช้งาน</h1>`;
+        resultDiv.innerHTML = `<h1>❌ คูปองหมดอายุการใช้งาน</h1>`;
         // showMessage("รหัสนี้หมดอายุการใช้งาน", "warning",{ timer: false, showCloseButton: true, timerProgressBar: false, toast: false});
     } else {
         resultDiv.innerHTML = `<h1>เกิดข้อผิดพลาดในการบันทึกข้อมูล</h1>`;
