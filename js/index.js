@@ -6,7 +6,7 @@ const LIFF_ID = "2008595384-42wB37LX";
 $(async function () {
     await liff.init({ liffId: LIFF_ID });
     if (!liff.isLoggedIn()) {
-        liff.login()
+        liff.login();
         return;
     }
     startScanner();
@@ -36,7 +36,6 @@ function onScanSuccess(decodedText) {
     if (scanned) return;
     scanned = true;
 
-    const [uuid, empno] = decodedText.split("|");
     // Stop this instance (not the class) and then clear the UI
     if (cameraStart) {
         cameraStart
@@ -49,7 +48,7 @@ function onScanSuccess(decodedText) {
                 document.getElementById("reader").style.display = "none";
                 document.getElementById("scan").style.display = "inline-block";
                 // Now you can call checkUUID or other handling once
-                const check = await checkUUID(uuid);
+                const check = await checkUUID(decodedText);
                 receiveData(check);
             })
             .catch((err) => {
@@ -78,8 +77,12 @@ function onScanSuccess(decodedText) {
 // }
 
 //prettier-ignore
-async function checkUUID(uuid) {
+async function checkUUID(qr) {
     try {
+        const [uuid, empno, expire] = qr.split("|");
+        if(new Date().getMonth() + 1 != Number(expire)) {
+            return {status: "EXPIRED"};
+        }
         const profile = await liff.getProfile();
         // showMessage(`ยินดีต้อนรับ ${profile.displayName} ${profile.userId} `, "success");
         userId = profile.userId;
@@ -118,6 +121,9 @@ function receiveData(res) {
     } else if (res.status == "NOT_FOUND") {
         resultDiv.innerHTML = `<h1>ไม่พบข้อมูลพนักงาน</h1>`;
         // showMessage("ไม่พบข้อมูลพนักงาน", "warning",{ timer: false, showCloseButton: true, timerProgressBar: false, toast: false});
+    } else if (res.status == "EXPIRED") {
+        resultDiv.innerHTML = `<h1>❌ รหัสนี้หมดอายุการใช้งาน</h1>`;
+        // showMessage("รหัสนี้หมดอายุการใช้งาน", "warning",{ timer: false, showCloseButton: true, timerProgressBar: false, toast: false});
     } else {
         resultDiv.innerHTML = `<h1>เกิดข้อผิดพลาดในการบันทึกข้อมูล</h1>`;
         // showMessage("เกิดข้อผิดพลาดในการบันทึกข้อมูล", "error", { timer: false, showCloseButton: true, timerProgressBar: false, toast: false});
