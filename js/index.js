@@ -107,13 +107,13 @@ function receiveData(res) {
         str += `<p>ชื่อ: ${res.data.empname}</p>`;
         str += `<p>${res.data.empno}</p>`;
         resultDiv.innerHTML = str;
-        sendMessageToLine(`บันทึกข้อมูลสำเร็จ ชื่อ: ${res.data.empname} (${res.data.empno}) ${userId} | ${displayName}`);
+        sysSendMessageToLine(userId,`บันทึกข้อมูลสำเร็จ ชื่อ: ${res.data.empname} (${res.data.empno}) ${userId} | ${displayName}`);
         // showMessage(`บันทึกข้อมูลสำเร็จ ชื่อ: ${res.data.empname} (${res.data.empno})`,"success",{ timer: false, showCloseButton: true, timerProgressBar: false, toast: false});
     } else if (res.status == "USED") {
         resultDiv.innerHTML = `<h1>ถูกใช้ไปแล้ว</h1>
         <p>ชื่อ: ${res.data.empname}</p>
         <p>${res.data.empno}</p>`;
-        sendMessageToLine(`ถูกใช้ไปแล้ว ชื่อ: ${res.data.empname} (${res.data.empno}) ${userId} | ${displayName}`);
+        sysSendMessageToLine(userId,`ถูกใช้ไปแล้ว ชื่อ: ${res.data.empname} (${res.data.empno}) ${userId} | ${displayName}`);
         // showMessage(`รหัสนี้ถูกใช้ไปแล้ว ชื่อ: ${res.data.empname} (${res.data.empno})`,"warning",{ timer: false, showCloseButton: true, timerProgressBar: false, toast: false});
     } else if (res.status == "NOT_FOUND") {
         resultDiv.innerHTML = `<h1>ไม่พบข้อมูลพนักงาน</h1>`;

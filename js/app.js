@@ -46,3 +46,23 @@ function loader(show) {
         }
     }
 }
+
+async   function sysSendMessageToLine(to, msg) {
+    const payload = {
+        to: to,
+        messages: [
+            {
+                type: 'text',
+                text: msg
+            }
+        ]
+    };
+    await fetch('https://api.line.me/v2/bot/message/push', { 
+        method: 'POST', 
+        headers: { 
+            'Authorization': 'Bearer c9vBkfenIhx43rdyJGgG8ZNEE8v8gGiZO2jKib7L2lcHFcnT4G7ebMDlsSxyBJvAWHWbnLDR73MG7C76+1QW0IjPVsqwn2O+3nHY8wlNwq+asb+lOeodtS2biXWATE6fp7hU1UqN2Pr80LWjYedUFAdB04t89/1O/w1cDnyilFU=', 
+            'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(payload) 
+    });
+}
